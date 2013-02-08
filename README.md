@@ -1,9 +1,15 @@
 jqListener
 ==========
 
-jQuery plugin to listen from twitter
+jQuery plugin to listen from twitter.
+
+Continuously fetch content from Twitter and display them in a waterfall view.
+
+![Preview screenshot](https://raw.github.com/zhangxin840/jqListener/master/screenShot.jpg)
+
 
 Usage:
+=========
 
 ```
 <!-- Add to header -->
