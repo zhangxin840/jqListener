@@ -5,6 +5,7 @@ jQuery plugin to listen from twitter
 
 Usage:
 
+```
 <!-- Add to header -->
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="js/jqListener.min.js"></script>
@@ -28,3 +29,5 @@ $(function() {
 
 //Search another keyword
 $(".jqListener:first").changeListening("ipad");
+
+```
