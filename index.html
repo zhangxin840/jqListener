@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>jqListener Demo</title>
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- jqListener -->
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="js/jqListener.min.js"></script>
+		<link rel="stylesheet" href="css/jqListener.min.css" />
+	</head>
+	<style>
+		body {
+			background: transparent url(img/shl.png) repeat top left;
+			padding-bottom: 50px;
+		}
+		.form-search {
+			margin-bottom: 15px;
+		}
+	</style>
+	<body>
+		<div class="container">
+			<div class="navbar">
+				<div class="navbar-inner">
+					<a class="brand" href="index.html">jqListener</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span6">
+					<form class="form-search" action="#">
+						<input id="keyword" name="keyword" type="text" class="input-medium search-query" placeholder="Apple">
+						<button type="submit" class="btn" >
+							Listen
+						</button>
+					</form>
+				</div>
+				<div class="span6">
+					<div class="hero-unit">
+						<h1>jqListener</h1>
+						<p>
+							jQuery plugin to Listen from twitter
+						</p>
+						<p>
+							<a class="btn btn-primary btn-large" href="https://github.com/zhangxin840/jqListener">Learn more </a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//Start up jqListener
+		$(function() {
+			$('.jqListener').jqListener({
+				keyword : "apple",
+				language : "en",
+				maxNum : 6, //Max number of tweets the container can hold
+				firstNum : 3, //Number of tweets of the first request
+				animation : true,
+				animationSpeed : 2000,
+				fetchInterval : 2000
+			});
+		});
+
+		//Codes for changing topic(optional)
+		$("form").submit(function() {
+			var keyword = "";
+			//Get new keyword
+			if ($("#keyword").val()) {
+				keyword = $("#keyword").val();
+			} else {
+				keyword = $("#keyword").attr("placeHolder");
+			}
+			$(".jqListener:first").changeListening(keyword);
+			return false;
+		});
+
+	</script>
+</html>
