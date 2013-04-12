@@ -2,7 +2,8 @@
 //Mail: zhangxin840@gmail.com
 //
 //Inspired by monitter.com
-//Tanks to Tim Koschützki for his post about how to write jQuery plugins: http://debuggable.com/posts/how-to-write-jquery-plugins:4f72ab2e-7310-4a74-817a-0a04cbdd56cb//Functional module pattern is explained in the great book "Javascript: The Good Parts"
+//Tanks to Tim Koschützki for his post about how to write jQuery plugins: http://debuggable.com/posts/how-to-write-jquery-plugins:4f72ab2e-7310-4a74-817a-0a04cbdd56cb
+//Functional module pattern is explained in the great book "Javascript: The Good Parts"
 //
 //You may need a localhost to run the demo, becuse twitter web service used a JSONP approach for cross domain request
 //
@@ -36,7 +37,8 @@
 		var status = {
 			rrp : options.firstNum, //Number of tweets for a request
 			isFirstFetch : true,
-			lastId : 0
+			lastId : 0,
+            isPaused: false
 		};
 
 		//Convert twitter plain text to link
@@ -88,37 +90,39 @@
 				dataType : 'jsonp',
 				timeout : timeoutVal,
 				success : function(json) {
-					$(json.results).reverse().each(function() {
-						if ($('#tw' + this.id, elem).length === 0) {
+					if(!status.isPaused){
+                        $(json.results).reverse().each(function() {
+                            if ($('#tw' + this.id, elem).length === 0) {
 
-							var thedate = new Date(Date.parse(this.created_at));
-							var thedatestr = thedate.getHours() + ':' + thedate.getMinutes();
+                                var thedate = new Date(Date.parse(this.created_at));
+                                var thedatestr = thedate.getHours() + ':' + thedate.getMinutes();
 
-							//Creat tweet div
-							var divstr = '<div id="tw' + this.id + '" class="tweet"><img width="48" height="48" src="' + this.profile_image_url + '" ><p class="text">' + parseLink(this.text) + '<br />&nbsp;<b><a href="http://twitter.com/' + this.from_user + '" target="_blank">' + this.from_user + '</a></b> &nbsp;-&nbsp;<b>' + thedatestr + '</b></p></div>';
+                                //Creat tweet div
+                                var divstr = '<div id="tw' + this.id + '" class="tweet"><img width="48" height="48" src="' + this.profile_image_url + '" ><p class="text">' + parseLink(this.text) + '<br />&nbsp;<b><a href="http://twitter.com/' + this.from_user + '" target="_blank">' + this.from_user + '</a></b> &nbsp;-&nbsp;<b>' + thedatestr + '</b></p></div>';
 
-							//Update since id
-							status.lastId = this.id;
+                                //Update since id
+                                status.lastId = this.id;
 
-							//Remove old twitte div
-							var elemChildLength = elem.find("div").length;
-							if (elemChildLength === that.options.maxNum) {
-								elem.find("div:last").remove();
-							}
+                                //Remove old twitte div
+                                var elemChildLength = elem.find("div").length;
+                                if (elemChildLength === that.options.maxNum) {
+                                    elem.find("div:last").remove();
+                                }
 
-							elem.prepend(divstr);
+                                elem.prepend(divstr);
 
-							if (options.animation === true) {
-								$('#tw' + this.id, elem).hide();
-								$('#tw' + this.id + ' img', elem).hide();
-								$('#tw' + this.id + ' img', elem).fadeIn(options.animationSpeed);
-								$('#tw' + this.id, elem).fadeIn(options.animationSpeed);
-							}
-						}
-					});
+                                if (options.animation === true && status.rrp == 1) {
+                                    $('#tw' + this.id, elem).hide();
+                                    $('#tw' + this.id + ' img', elem).hide();
+                                    $('#tw' + this.id + ' img', elem).fadeIn(options.animationSpeed);
+                                    $('#tw' + this.id, elem).fadeIn(options.animationSpeed);
+                                }
+                            }
+                        });
 
-					//Get one tweet after first fetch
-					status.rrp = 1;
+                        //Get one tweet after first fetch
+                        status.rrp = 1;
+                    }
 
 					setTimeout(function() {
 						fetchTweets();
@@ -138,14 +142,25 @@
 			startListening();
 			//Delegation mode
 			//Name as event namespace, which allows easy unbinding later without removing event listeners on the widget elements that were not bound using our plugin.
-			container.on('click.' + name, 'h1', function(e) {
+			container.on('mouseenter.' + name, '', function(e) {
 				e.preventDefault();
-				handler();
+                mouseenterHandler();
 			});
+            container.on('mouseleave.' + name, '', function(e) {
+                e.preventDefault();
+                mouseleaveHandler();
+            });
 		};
 
-		var handler = function() {
+		var mouseenterHandler = function() {
+            status.isPaused = true;
+            console.log("control enter" + status.isPaused);
 		};
+
+        var mouseleaveHandler = function() {
+            status.isPaused = false;
+            console.log("control leave" + status.isPaused);
+        };
 
 		var startListening = function() {
 			fetchTweets();
